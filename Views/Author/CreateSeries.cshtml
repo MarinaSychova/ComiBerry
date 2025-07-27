@@ -1,0 +1,89 @@
+﻿@model VIEWCreateSeriesViewModel;
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab middle std-pad-2">
+	<fieldset class="tab-fieldset std-pad-2">
+		<legend>Add New Series</legend>
+		<form class="flex-column" asp-controller="Author" asp-action="CreateSeries" method="post">
+			<h4 style="width: 100%;">General Information</h4>
+			<fieldset class="grid-2-col">
+				<label asp-for="Title">Title</label>
+				<input class="text-input std-pad" type="text" value="New Series" asp-for="Title">
+				<label asp-for="Genre">Genre</label>
+				<select asp-for="Genre" id="genre-dropdown" class="text-input std-pad" required>
+					<option value="">Select a genre</option>
+					@if (Model.Genres is not null) {
+						foreach (var genre in Model.Genres)
+						{
+							<option value=@genre.GenreId>@genre.Name</option>
+						}
+					}
+				</select>
+				<label asp-for="Language">Language</label>
+				<select asp-for="Language" id="dropdown" class="text-input std-pad" required>
+					<option value="">Select a language</option>
+					<option value="English">English</option>
+					<option value="Polish">Polish</option>
+					<option value="Korean">Korean</option>
+				</select>
+				<label>Age Restrictions</label>
+				<span class="flex-row" style="width: 100%;">
+					<input asp-for="AgeRestriction" type="radio" name="agerestriction" value="all ages" checked />
+					<label asp-for="AgeRestriction">All ages</label>
+					<input asp-for="AgeRestriction" type="radio" name="agerestriction" value="13+" />
+					<label asp-for="AgeRestriction">13+</label>
+					<input asp-for="AgeRestriction" type="radio" name="agerestriction" value="15+" />
+					<label asp-for="AgeRestriction">15+</label>
+					<input asp-for="AgeRestriction" type="radio" name="agerestriction" value="18+" />
+					<label asp-for="AgeRestriction">18+</label>
+				</span>
+			</fieldset>
+			<hr style="width: 100%; border: var(--std-border);">
+			<h4 style="width: 100%;">Reader Settings</h4>
+			<fieldset class="grid-2-col">
+				<label asp-for="Layout">Page Layout</label>
+				<span class="flex-row" style="width: 100%;">
+					<input asp-for="Layout" type="radio" name="layout" value="traditional" checked />
+					<label asp-for="Layout">Traditional</label>
+					<input asp-for="Layout" type="radio" name="layout" value="vertical" />
+					<label asp-for="Layout">Vertical</label>
+				</span>
+				<label asp-for="Direction">Reading Direction</label>
+				<span class="flex-row" style="width: 100%;">
+					<input asp-for="Direction" type="radio" name="direction" value="left to right" checked />
+					<label asp-for="Direction">Left to Right</label>
+					<input asp-for="Direction" type="radio" name="direction" value="right to left" />
+					<label asp-for="Direction">Right to Left</label>
+				</span>
+			</fieldset>
+			<hr style="width: 100%; border: var(--std-border);">
+			<h4 style="width: 100%;">Monetization</h4>
+			<fieldset class="grid-2-col">
+				<label asp-for="AccessMode">Access Mode</label>
+				<span class="flex-row" style="width: 100%;">
+					<input asp-for="AccessMode" id="monetization-radio" type="radio" name="accessmode" value="free" checked />
+					<label asp-for="AccessMode">Free</label>
+					<input asp-for="AccessMode" id="monetization-radio-paid" type="radio" name="accessmode" value="paid" />
+					<label asp-for="AccessMode">Paid</label>
+				</span>
+				<label asp-for="FreeChapters">How many first chapters are free?</label>
+				<input asp-for="FreeChapters" class="text-input std-pad" type="number" id="quantity" min="0" max="10" disabled>
+			</fieldset>
+			<hr style="width: 100%; border: var(--std-border);">
+			<h4 style="width: 100%;">Visibility</h4>
+			<fieldset class="grid-2-col">
+				<label asp-for="IsVisible">Keep the series in the drafts?</label>
+				<span class="flex-row" style="width: 100%;">
+					<input asp-for="IsVisible" type="radio" name="visibility" value=false checked />
+					<label asp-for="IsVisible">Yes</label>
+					<input asp-for="IsVisible" type="radio" name="visibility" value=true />
+					<label asp-for="IsVisible">No</label>
+				</span>
+			</fieldset>
+			<input class="btn std-pad" type="submit" value="Create the series">
+		</form>
+	</fieldset>
+</div>

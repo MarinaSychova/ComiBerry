@@ -1,0 +1,11 @@
+﻿@model VIEWLoginPartialViewModel;
+
+<h4>Log In</h4>
+<form class="flex-column std-pad" asp-controller="Account" asp-action="Login" method="post">
+	<label asp-for="Email">E-mail</label>
+	<input class="text-input std-pad" type="text" asp-for="Email" required>
+	<label asp-for="Password">Password</label>
+	<input class="text-input std-pad" type="text" asp-for="Password" required>
+	<input class="btn std-pad" type="submit" value="Login">
+</form>
+<a asp-controller="Account" asp-action="Register">Create account</a>

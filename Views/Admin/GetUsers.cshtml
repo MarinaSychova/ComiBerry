@@ -1,0 +1,58 @@
+﻿@model ADMINGetUsersViewModel;
+
+<div class="tab middle std-pad-2">
+	<form class="flex-column" asp-controller="Admin" asp-action="GetUserByParameters" method="get">
+		<fieldset class="grid-2-col">
+			<input name="Role" type="hidden" value="user" />
+			<label asp-for="Id">Get @(char.ToUpper(Model.Role[0]) + Model.Role.Substring(1)) by Id</label>
+			<input asp-for="Id" class="text-input std-pad" type="text" />
+			<label asp-for="UserName">or by User Name</label>
+			<input asp-for="UserName" class="text-input std-pad" type="text" />
+			<label asp-for="Email">or by E-mail</label>
+			<input asp-for="Email" class="text-input std-pad" type="text" />
+		</fieldset>
+		<input class="btn std-pad" type="submit" value="Find User">
+	</form>
+</div>
+
+<div class="tab middle std-pad-2">
+	<fieldset class="tab-fieldset flex-column std-pad-2">
+		<legend>@(char.ToUpper(Model.Role[0]) + Model.Role.Substring(1) + "s")</legend>
+		@{
+			var users = Model.Users;
+			if (users is not null)
+			{
+				foreach (var user in users)
+				{
+					<div class="data-row flex-column std-pad-2">
+						<div class="grid-2-col" style="text-align: left;">
+							<img class="avatar-img big" src="@Url.Action("GetAvatar", "Image", new { userId = user.Id })">
+							<div class="description">
+								<div>
+									<h4>ID: </h4>
+									<p>@user.Id<p>
+								</div>
+								<div>
+									<h4>User Name: </h4>
+									<p>@user.UserName<p>
+								</div>
+								<div>
+									<h4>E-mail: </h4>
+									<p>@user.Email</p>
+								</div>
+							</div>
+						</div>
+						<div class="buttons flex-row">
+							<button class="btn std-pad" style="width: fit-content;" onclick="location.href='@Url.Action("ViewProfile", "Admin", new { userId = user.Id })'">View Profile</button>
+							@if (Model.Role == "user")
+							{
+								<button class="btn std-pad" style="width: fit-content;" onclick="location.href='@Url.Action("SetAsAdmin", "Admin", new { userId = user.Id })'">Set as Admin</button>
+							}
+							<button class="btn std-pad" style="width: fit-content;" onclick="location.href='@Url.Action("DeleteUser", "Admin", new { userId = user.Id, currentRole = Model.Role })'">Delete</button>
+						</div>
+					</div>
+				}
+			}
+		}
+	</fieldset>
+</div>

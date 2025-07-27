@@ -1,0 +1,51 @@
+﻿@model SeriesIdViewModel;
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab middle std-pad-2">
+	<form asp-controller="Author" asp-action="AddChapter" enctype="multipart/form-data" method="post">
+		<input name="seriesId" type="hidden" value="@Model.SeriesId" />
+		<fieldset class="grid-2-col">
+			<label name="title">Chapter title</label>
+			<input class="text-input std-pad" type="text" name="title">
+		</fieldset>
+		<hr style="margin: 1rem 0;">
+		<fieldset>
+			<button type="button" class="btn std-pad" onclick="AddPage(this)" style="margin-bottom: 1rem;">Add a Page</button>
+		</fieldset>
+		<input class="btn std-pad" type="submit" value="Save the chapter">
+	</form>
+</div>
+
+<script src="~/js/chap.js"></script>
+
+<script>
+	function updateOrders() {
+	  document.querySelectorAll('.page').forEach((page, index) => {
+		page.dataset.order = index + 1;
+		const input = page.querySelector('input[type="hidden"]');
+		if (input) input.value = index + 1;
+	  });
+	}
+
+	function AddPage(button) {
+		const pageDiv = document.createElement("div");
+		pageDiv.classList.add("page");
+		pageDiv.classList.add("grid-2-col");
+		pageDiv.style.marginBottom = "2rem";
+		button.parentNode.insertBefore(pageDiv, button);
+
+		AddPageCommon(pageDiv, "Pages")
+	}
+	
+	const fileInput = document.getElementById("fileInput");
+	const previewContainer = document.getElementById("previewContainer");
+
+	fileInput.addEventListener("change", () => {
+		previewContainer.innerHTML = "";
+		files = Array.from(fileInput.files);
+		renderPreviews();
+	});
+</script>

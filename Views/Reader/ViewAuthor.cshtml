@@ -1,0 +1,38 @@
+﻿@model VIEWViewAuthorViewModel;
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab middle std-pad-2">
+	<fieldset class="tab-fieldset std-pad-2">
+		<div class="flex-column">
+			<img class="avatar-img small" src="@Url.Action("GetAvatar", "Image", new { userId = Model.BasicUserDataPart.Id })">
+			<h4 style="font-size: 2rem;">@Model.BasicUserDataPart.Name</h4>
+		</div>
+		<p>@Model.BasicUserDataPart.Bio</p>
+	</fieldset>
+</div>
+
+<div class="tab middle std-pad-2">
+	<fieldset class="tab-fieldset flex-row std-pad-2">
+		<legend>Author's Works</legend>
+		@{
+			var series = Model.Series;
+			@if (series is not null)
+			{
+				@foreach (var work in series)
+				{
+					<a href="@Url.Action("ViewSeries", "Reader", new { seriesId = work.SeriesId })" class="series-preview flex-column std-pad">
+						<div>
+							<img class="series-cover" src="@Url.Action("GetCoverImage", "Image", new { seriesId = work.SeriesId })">
+						</div>
+						<h4>@work.Title</h4>
+						<p>@work.Year</p>
+						<div class="overlay"><p>Click to View</p></div>
+					</a>
+				}
+			}
+		}
+	</fieldset>
+</div>

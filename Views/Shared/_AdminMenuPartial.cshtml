@@ -1,0 +1,4 @@
+﻿<h3>Admin Menu</h3>
+<button class="btn std-pad" onclick="location.href='@Url.Action("GetUsers", "Admin", new { currentRole = "user" })'">Users</button>
+<button class="btn std-pad" onclick="location.href='@Url.Action("GetUsers", "Admin", new { currentRole = "admin" })'">Admins</button>
+<button class="btn std-pad" onclick="location.href='@Url.Action("GetSeries", "Admin")'">Series</button>

@@ -1,0 +1,29 @@
+﻿@model SeriesListViewModel;
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab middle std-pad-2">
+	<button class="btn std-pad" onclick="location.href='@Url.Action("CreateSeries", "Author")'" style="margin-bottom: 1rem;">Add Another Series</button>
+	<fieldset class="tab-fieldset flex-row std-pad-2">
+		<legend>My works</legend>
+		@{
+			var series = Model.Series;
+			@if (series is not null)
+			{
+				@foreach (var work in series)
+				{
+					<a href="@Url.Action("EditSeries", "Author", new { seriesId = work.Id })" class="series-preview flex-column std-pad">
+						<div>
+							<img class="series-cover" src="@Url.Action("GetCoverImage", "Image", new { seriesId = work.Id})">
+						</div>
+						<h4>@work.Title</h4>
+						<p>@work.Year</p>
+						<div class="overlay"><p>Click to edit</p></div>
+					</a>
+				}
+			}
+		}
+	</fieldset>
+</div>

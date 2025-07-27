@@ -1,0 +1,93 @@
+﻿@model VIEWViewChapterViewModel;
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab middle std-pad-2">
+	<h4 style="margin-bottom: 1rem; font-size: 1.5rem;">@Model.SeriesTitle</h4>
+	<h4 style="margin-bottom: 1rem; font-size: 1rem;">Chapter @Model.ChapterIndex: @Model.Title</h4>
+	@{
+		string styleClass;
+		string style;
+		@if (Model.BasicChapterDataPart.Layout == "traditional")
+		{
+			styleClass = "flex-row";
+			style = "height: 79vh; overflow-x: auto; flex-wrap: nowrap; column-gap: 0; border: var(--std-border);";
+			if (Model.BasicChapterDataPart.Direction == "left to right")
+			{
+				style += " flex-direction: row;";
+			}
+			else
+			{
+				style += " flex-direction: row-reverse;";
+			}
+		}
+		else
+		{
+			styleClass = "flex-column";
+			style = "row-gap: 0; border: var(--std-border)";
+		}
+	}
+	<div class="@styleClass" style="@style">
+		@if (Model.BasicChapterDataPart.Pages is not null)
+		{
+			var currentPage = Model.BasicChapterDataPart.Pages!.First(p => p.PageId == Model.BasicChapterDataPart.FirstPageId);
+			while (true)
+			{
+				string imgWidthStyle = "height: 100%;";
+				if (Model.BasicChapterDataPart.Layout == "vertical")
+				{
+					imgWidthStyle += " width: 100%;";
+				}
+				else
+				{
+					imgWidthStyle += " width: auto;;";
+				}
+
+				<img src="@Url.Action("GetPageImage", "Image", new { pageId = currentPage.PageId })" style="@imgWidthStyle">
+				currentPage = currentPage.NextPage;
+				if (currentPage is null)
+				{
+					break;
+				}
+			}
+		}
+	</div>
+</div>
+
+<div class="tab middle std-pad-2">
+	<form asp-controller="Reader" asp-action="AddComment" method="post">
+		<input name="chapterId" type="hidden" value="@Model.ChapterId" />
+		<fieldset class="tab-fieldset flex-row std-pad-2">
+			<legend>Add Comment</legend>
+			<textarea name="text" class="text-input std-pad" rows=6></textarea>
+			<input class="btn std-pad" type="submit" value="Post Comment">
+		</fieldset>
+	</form>
+</div>
+
+<div class="tab middle std-pad-2">
+	<fieldset class="tab-fieldset std-pad-2">
+		<legend>Comments</legend>
+		@{
+			var comments = Model.Comments;
+			if (comments is not null)
+			{
+				for (int i = comments.Count - 1; i >= 0; i--)
+				{
+					<div class="data-row flex-column std-pad-2">
+						<div class="grid-2-col" style="grid-template-columns: 14% 84%; text-align: left;">
+							<img class="avatar-img big" src="@Url.Action("GetAvatar", "Image", new { userId = comments[i].User.Id })">
+							<div>
+								<h4>@comments[i].User.UserName</h4>
+								<p>@comments[i].DateTime</p>
+							</div>
+						</div>
+						<p>@comments[i].Text</p>
+					</div>
+				}
+			}
+		}
+	</fieldset>
+</div>

@@ -1,0 +1,44 @@
+﻿@model VIEWMyAccountViewModel;
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab middle grid-2-col std-pad-2">
+	<div class="flex-column">
+		<img class="avatar-img big" src="@Url.Action("GetAvatar", "Image", new { userId = Model.BasicUserDataPart.Id })">
+		<form class="flex-column" asp-controller="UserMenu" asp-action="ChangeAvatar" enctype="multipart/form-data" method="post">
+			<input class="btn std-pad" type="file" name="newAvatar" accept=".jpg, .png, .gif" />
+			<input class="btn std-pad" type="submit" value="Change Avatar" />
+		</form>
+	</div>
+	<fieldset class="tab-fieldset flex-column std-pad">
+		<legend>Account Information</legend>
+		<form class="flex-column" asp-controller="UserMenu" asp-action="SaveChanges" method="post">
+			<fieldset class="grid-2-col">
+				<label asp-for="BasicUserDataPart.Name">User Name</label>
+				<input class="text-input std-pad" type="text" name="name" value=@Model.BasicUserDataPart.Name>
+				<label asp-for="Email">E-mail</label>
+				<input class="text-input std-pad" type="email" name="email" value=@Model.Email>
+			</fieldset>
+			<input class="btn std-pad" type="submit" value="Save Changes">
+		</form>
+	</fieldset>
+</div>
+
+<div class="tab middle flex-column std-pad-2">
+	@{
+		var passwordModel = new VIEWMyAccountPasswordViewModel();
+		<partial name="MyAccountPasswordPartial" model="passwordModel" />
+	}
+</div>
+
+<div class="tab middle flex-column std-pad-2">
+	<fieldset class="tab-fieldset flex-column std-pad">
+		<legend>Change Bio</legend>
+		<form class="flex-column" asp-controller="UserMenu" asp-action="ChangeBio" method="post">
+			<textarea name="bio" class="text-input std-pad" rows=6>@Html.Raw(Model.BasicUserDataPart.Bio)</textarea>
+			<input class="btn std-pad" type="submit" value="Change Bio" />
+		</form>
+	</fieldset>
+</div>

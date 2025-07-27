@@ -1,0 +1,111 @@
+﻿@model VIEWEditChapterViewModel;
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab middle std-pad-2">
+	<form asp-controller="Author" asp-action="EditChapter" enctype="multipart/form-data" method="post">
+		<input name="seriesId" type="hidden" value="@Model.SeriesId" />
+		<input name="chapterId" type="hidden" value="@Model.ChapterId" />
+		<fieldset class="grid-2-col">
+			<label asp-for="Title">Chapter title</label>
+			<input class="text-input std-pad" type="text" asp-for="Title" value=@Model.Title>
+		</fieldset>
+		<hr style="margin: 1rem 0;">
+
+		<div id="pages-container">
+		@if (Model.Pages is not null)
+		{
+			var currentPage = Model.Pages.First(p => p.PageId == Model.FirstPageId);
+			var index = 0;
+			while (true)
+			{
+				<div class="page grid-2-col" style="margin-bottom: 2rem">
+					<input name="PagesData[@index].PageId" type="hidden" value="@currentPage.PageId" data-field="PageId" data-const-value="@currentPage.PageId" />
+					@{
+						var nextPage = currentPage.NextPage;
+						@if (nextPage is not null)
+						{
+							<input name="PagesData[@index].NextPageId" type="hidden" value="@nextPage.PageId" data-field="NextPageId" data-const-value="@nextPage.PageId" />
+						}
+					}
+					<span>
+						<button type="button" class="move-up btn std-pad">Up</button>
+						<button type="button" class="move-down btn std-pad">Down</button>
+					</span>
+					<span>
+						<img src="@Url.Action("GetPageImage", "Image" , new { pageId = currentPage.PageId })" style="width: 100%; object-fit: cover; aspect-ratio: 1/1">
+						<button type="button" class="delete btn std-pad">Delete</button>
+					</span>
+				</div>
+				currentPage = currentPage.NextPage;
+				if (currentPage is null)
+				{
+					break;
+				}
+				index += 1;
+			}
+		}
+		</div>
+		<fieldset>
+			<button type="button" class="btn std-pad" onclick="AddPage(this)" style="margin-bottom: 1rem;">Add a Page</button>
+		</fieldset>
+
+		<input class="btn std-pad" type="submit" value="Save the chapter">
+	</form>
+</div>
+
+<script src="~/js/chap.js"></script>
+
+<script>
+	function updateOrders() {
+		document.querySelectorAll('.page').forEach((page, index) => {
+			page.dataset.order = index + 1;
+		});
+	}
+
+	function reindexPages() {
+		const blocks = document.querySelectorAll('.page');
+		console.log(blocks.length);
+
+		blocks.forEach((block, index) => {
+			block.querySelectorAll('input[type="hidden"]').forEach(input => {
+				const fieldName = input.dataset.field;
+				if (fieldName) {
+					input.name = `PagesData[${index}].${fieldName}`;
+					input.value = input.dataset.constValue;
+				}
+			});
+			block.querySelectorAll('input[type="hidden"]').forEach(input => {
+				console.log(input.name);
+				console.log(input.value);
+			});
+		});
+	}
+
+	function AddPage() {
+		const pageDiv = document.createElement("div");
+		pageDiv.classList.add("page");
+		pageDiv.classList.add("grid-2-col");
+		pageDiv.style.marginBottom = "2rem";
+
+		const container = document.getElementById("pages-container");
+		container.appendChild(pageDiv);
+
+		const lastIndex = document.querySelectorAll('.page').length - 1;
+		pageDiv.innerHTML += `<input name="PagesData[${lastIndex}].PageId" type="hidden" value="00000000-0000-0000-0000-000000000000" data-field="PageId" data-const-value="00000000-0000-0000-0000-000000000000" />`;
+		pageDiv.innerHTML += `<input name="PagesData[${lastIndex}].NextPageId" type="hidden" value="00000000-0000-0000-0000-000000000000" data-field="NextPageId" data-const-value="00000000-0000-0000-0000-000000000000" />`;
+
+		AddPageCommon(pageDiv, "NewPages")
+		
+		const blocks = document.querySelectorAll('.page');
+		console.log(blocks.length);
+		blocks.forEach(block => {
+			block.querySelectorAll('input[type="hidden"]').forEach(input => {
+				console.log(input.name);
+				console.log(input.value);
+			});
+		});
+	}
+</script>

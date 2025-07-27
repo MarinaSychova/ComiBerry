@@ -1,0 +1,76 @@
+﻿@inject SignInManager<User> signInManager;
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/accessories.css" asp-append-version="true" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
+</head>
+
+
+<body>
+	<div id="body-content">
+		<header>
+			<div id="nav-collection">
+				<button class="nav-btn std-pad" onclick="location.href='@Url.Action("Home", "Navigation")'">Home</button>
+			</div>
+			<img id="logo" src="~/images/logo.svg">
+		</header>
+
+		<main>
+			<div id="collapsible-menu">
+				<span style="justify-content: flex-start;">
+					<button id="login-button" onclick="OpenLogin()" class="coll-btn std-pad"><i class="fa-solid fa-arrow-right-to-bracket"></i></button>
+					<button id="login-close-button" onclick="CloseLogin()" class="coll-btn std-pad"><i class="fa-solid fa-xmark"></i></button>
+				</span>
+				<span style="justify-content: flex-end;">
+					<button id="search-button" onclick="OpenSearch()" class="coll-btn std-pad"><i class="fa-solid fa-magnifying-glass"></i></button>
+					<button id="search-close-button" onclick="CloseSearch()" class="coll-btn std-pad"><i class="fa-solid fa-xmark"></i></button>
+				</span>
+			</div>
+
+			<div id="left-column">
+				<div class="tab left flex-column std-pad-2"></div>
+			</div>
+
+			<div id="middle-column">
+				@RenderBody()
+			</div>
+
+			<div id="right-column"></div>
+		</main>
+
+		<footer></footer>
+
+	</div>
+
+	<script src="~/js/site.js"></script>
+
+	@if (signInManager.IsSignedIn(User))
+	{
+		<script>
+			GetMenu(true);
+		</script>
+	}
+	else
+	{
+		<script>
+			GetMenu(false);
+		</script>
+	}
+
+	@if (User.IsInRole("admin") || User.IsInRole("superadmin"))
+	{
+		<script>
+			GetAdminMenu();
+		</script>
+	}
+
+	<script>GetSearch();</script>
+
+</body>
+</html>

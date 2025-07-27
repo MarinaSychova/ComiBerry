@@ -1,0 +1,103 @@
+﻿@model Series;
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab middle std-pad-2">
+	<fieldset class="tab-fieldset std-pad-2">
+		<legend>@Model.Title</legend>
+		<div class="grid-2-col" style="margin-bottom: 1rem;">
+			<img class="series-cover" src="@Url.Action("GetCoverImage", "Image", new { seriesId = Model.SeriesId})">
+			<div class="series-data">
+				<div>
+					<h4>ID:</h4>
+					<p>@Model.SeriesId</p>
+				</div>
+				@if (Model.User is not null)
+				{
+					<div>
+						<h4>Author:</h4>
+						<a href="@Url.Action("ViewProfile", "Admin", new { userId = Model.User.Id })" style="text-align: left;">@Model.User.Id</a>
+					</div>
+				}
+				<div>
+					<h4>Language:</h4>
+					<p>@Model.Language</p>
+				</div>
+				<div>
+					<h4>Year:</h4>
+					<p>@Model.Year</p>
+				</div>
+				<div>
+					<h4>Age restriction:</h4>
+					<p>@Model.AgeRestriction</p>
+				</div>
+				<div>
+					<h4>Genres :</h4>
+					@{
+						var genres = new List<string>();
+						foreach (var genre in Model.Genre)
+						{
+							genres.Add(genre.Name);
+						}
+						<p>@String.Join(", ", genres)</p>
+					}
+				</div>
+				<div>
+					<h4>Layout:</h4>
+					<p>@Model.Layout</p>
+				</div>
+				<div>
+					<h4>Reading direction:</h4>
+					<p>@Model.Direction</p>
+				</div>
+				<div>
+					<h4>Access Mode:</h4>
+					<p>@Model.AccessMode</p>
+				</div>
+				<div>
+					<h4>Is Public:</h4>
+					<p>@Model.IsVisible</p>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<h4 style="margin-bottom: 0.5rem;">Description</h4>
+		<p style="word-break: keep-all; margin-bottom: 1rem;">@Model.Layout</p>
+		<h4 style="margin-bottom: 0.5rem;">Tags</h4>
+		<p style="word-break: keep-all;">@Model.Direction</p>
+	</fieldset>
+</div>
+
+<div class="tab middle std-pad-2">
+	@{
+		var chapters = Model.Chapters;
+		if ((chapters is not null) && (chapters.Count > 0))
+		{
+			@for (int i = chapters.Count - 1; i >= 0; i--)
+			{
+				<div class="chapter-preview std-pad">
+					<h4>Chapter @(i + 1): @chapters.ElementAt(i).Title</h4>
+					<p>@chapters.ElementAt(i).Date<p>
+					<p>Price</p>
+					@if (@chapters.ElementAt(i).IsPublished)
+					{
+						<p>Published</p>
+					}
+					else
+					{
+						<p>In Editing</p>
+					}
+					<div>
+						<button class="btn std-pad" onclick="location.href='@Url.Action("ReadChapter", "Author", new { chapterId = chapters.ElementAt(i).ChapterId, layout = Model.Layout, direction = Model.Direction })'" style="width: fit-content;">Read</button>
+					</div>
+				</div>
+			}
+		}
+	}
+</div>
+
+<div class="tab middle std-pad-2">
+	<button class="btn std-pad" onclick="location.href='@Url.Action("DeleteSeries", "Admin", new { seriesId = Model.SeriesId })'">Delete the Series</button>
+</div>

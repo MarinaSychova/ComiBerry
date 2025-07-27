@@ -1,0 +1,124 @@
+﻿@model VIEWEditSeriesViewModel;
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab middle std-pad-2">
+	<fieldset class="tab-fieldset std-pad-2">
+		<legend>@Model.ExtendedSeriesDataPart.BasicSeriesDataPart.Title</legend>
+		<div class="grid-2-col" style="margin-bottom: 1rem;">
+			<div>
+				<img class="series-cover" src="@Url.Action("GetCoverImage", "Image", new { seriesId = Model.ExtendedSeriesDataPart.BasicSeriesDataPart.Id })">
+				<form class="flex-column" asp-controller="Author" asp-action="ChangeCover" enctype="multipart/form-data" method="post">
+					<input name="seriesId" type="hidden" value=@Model.ExtendedSeriesDataPart.BasicSeriesDataPart.Id />
+					<input class="btn std-pad" type="file" name="newCover" accept=".jpg, .png, .gif" />
+					<input class="btn std-pad" type="submit" value="Change cover" />
+				</form>
+			</div>
+			<div class="series-data">
+				<div>
+					<h4>Language:</h4>
+					<p>@Model.ExtendedSeriesDataPart.Language</p>
+				</div>
+				<div>
+					<h4>Age restriction:</h4>
+					<p>@Model.ExtendedSeriesDataPart.AgeRestriction</p>
+				</div>
+				<div>
+					<h4>Layout:</h4>
+					<p>@Model.ExtendedSeriesDataPart.Layout</p>
+				</div>
+				<div>
+					<h4>Reading direction:</h4>
+					<p>@Model.ExtendedSeriesDataPart.Direction</p>
+				</div>
+				<hr>
+				<h4>Choose more genres (optional)</h4>
+				<form class="flex-row" asp-controller="Author" asp-action="SaveGenres" method="post">
+					<input name="seriesId" type="hidden" value=@Model.ExtendedSeriesDataPart.BasicSeriesDataPart.Id />
+					@{
+						var genres = Model.Genres;
+						@if (genres is not null)
+						{
+							@foreach (var genre in genres)
+							{
+								<span>
+									@if (Model.ExtendedSeriesDataPart.Genres.Contains(genre))
+									{
+										<input type="checkbox" name="GenresChosen" value=@genre.GenreId checked>
+									}
+									else
+									{
+										<input type="checkbox" name="GenresChosen" value=@genre.GenreId>
+									}
+									<label>@genre.Name</label>
+								</span>
+							}
+						}
+					}
+					<input class="btn std-pad" type="submit" value="Save Genres">
+				</form>
+				@if (@Model.IsVisible == false)
+				{
+					<hr>
+					<button class="btn std-pad" onclick="location.href='@Url.Action("MakeVisible", "Author", new { seriesId = Model.ExtendedSeriesDataPart.BasicSeriesDataPart.Id })'">Make the Series Visible</button>
+				}
+			</div>
+		</div>
+		<hr>
+		<form asp-controller="Author" asp-action="SaveDescAndTags" method="post" class="series-data">
+			<input name="seriesId" type="hidden" value="@Model.ExtendedSeriesDataPart.BasicSeriesDataPart.Id" />
+			<h4>Description (500 symbols MAX)</h4>
+			<textarea name="description" class="text-input std-pad" rows=6>@Html.Raw(Model.ExtendedSeriesDataPart.Description)</textarea>
+			<h4>Tags (500 symbols MAX)</h4>
+			<textarea name="tags" class="text-input std-pad" rows=6>@Html.Raw(Model.ExtendedSeriesDataPart.Tags)</textarea>
+			<input class="btn std-pad" type="submit" value="Save the Description and Tags">
+		</form>
+	</fieldset>
+</div>
+
+<div class="tab middle std-pad-2">
+	@if (Model.IsVisible && (Model.ExtendedSeriesDataPart.Chapters is not null)
+		&& (Model.ExtendedSeriesDataPart.Chapters.Count > 0) && !Model.ExtendedSeriesDataPart.Chapters.Last().IsPublished)
+	{
+		<button class="btn std-pad" onclick="location.href='@Url.Action("PublishLastChapter", "Author", new { seriesId = Model.ExtendedSeriesDataPart.BasicSeriesDataPart.Id })'" style="margin-bottom: 0.5rem;">Publish the Last Chapter</button>
+	}
+	else
+	{
+		<button class="btn std-pad" onclick="location.href='@Url.Action("AddChapter", "Author", new { seriesId = Model.ExtendedSeriesDataPart.BasicSeriesDataPart.Id })'" style="margin-bottom: 0.5rem;">Add a New Chapter</button>
+	}
+
+	@{
+		var chapters = Model.ExtendedSeriesDataPart.Chapters;
+		if ((chapters is not null) && (chapters.Count > 0))
+		{
+			@for (int i = chapters.Count - 1; i >= 0; i--)
+			{
+				<div class="chapter-preview std-pad">
+					<h4>Chapter @(i + 1): @chapters.ElementAt(i).Title</h4>
+					<p>@chapters.ElementAt(i).Date<p>
+					<p>Price</p>
+					<div>
+						@if (!chapters.ElementAt(i).IsPublished)
+						{
+							<button class="btn std-pad" onclick="location.href='@Url.Action("EditChapter", "Author", new { seriesId = Model.ExtendedSeriesDataPart.BasicSeriesDataPart.Id, chapterId = chapters.ElementAt(i).ChapterId })'" style="width: fit-content;">Edit</button>
+						}
+						<button class="btn std-pad" onclick="location.href='@Url.Action("ReadChapter", "Author", new { seriesId = Model.ExtendedSeriesDataPart.BasicSeriesDataPart.Id, chapterId = chapters.ElementAt(i).ChapterId, layout = Model.ExtendedSeriesDataPart.Layout, direction = Model.ExtendedSeriesDataPart.Direction })'" style="width: fit-content;">Read</button>
+					</div>
+				</div>
+			}
+			@if (!Model.IsVisible)
+			{
+				<button class="btn std-pad" onclick="location.href='@Url.Action("DeleteLastChapter", "Author", new { seriesId = Model.ExtendedSeriesDataPart.BasicSeriesDataPart.Id, isVisible = Model.IsVisible })'" style="margin-top: 0.5rem;">Delete the Last Chapter</button>
+			}
+		}
+	}
+</div>
+
+@if (!Model.IsVisible)
+{
+	<div class="tab middle std-pad-2">
+		<button class="btn std-pad" onclick="location.href='@Url.Action("DeleteSeries", "Author", new { seriesId = Model.ExtendedSeriesDataPart.BasicSeriesDataPart.Id })'">Delete the Series</button>
+	</div>
+}

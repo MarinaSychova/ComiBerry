@@ -1,0 +1,28 @@
+﻿@model SeriesListViewModel;
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab middle std-pad-2">
+	<fieldset class="tab-fieldset flex-row std-pad-2">
+		<legend>@ViewData["PageName"]</legend>
+		@{
+			List<BasicSeriesData>? series = Model.Series;
+			@if (series is not null)
+			{
+				@foreach (var work in series)
+				{
+					<a href="@Url.Action("ViewSeries", "Reader", new { seriesId = work.Id })" class="series-preview flex-column std-pad">
+						<div>
+							<img class="series-cover" src="@Url.Action("GetCoverImage", "Image", new { seriesId = work.Id })">
+						</div>
+						<h4>@work.Title</h4>
+						<p>@work.Year</p>
+						<div class="overlay"><p>Click to View</p></div>
+					</a>
+				}
+			}
+		}
+	</fieldset>
+</div>

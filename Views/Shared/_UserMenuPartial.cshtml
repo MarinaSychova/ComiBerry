@@ -1,0 +1,8 @@
+﻿@model VIEWUserMenuViewModel;
+
+<img class="avatar-img small" src="@Url.Action("GetAvatar", "Image", new { userId = Model.Id })">
+<p>-- @Model.Name --</p>
+<button class="btn std-pad" onclick="location.href='@Url.Action("MyAccount", "UserMenu")'">My Account</button>
+<button class="btn std-pad" onclick="location.href='@Url.Action("MyWorks", "UserMenu")'">My Works</button>
+<button class="btn std-pad" onclick="location.href='@Url.Action("MyFaves", "UserMenu")'">My Favorites</button>
+<button class="btn std-pad" onclick="location.href='@Url.Action("Logout", "Account")'">Logout</button>

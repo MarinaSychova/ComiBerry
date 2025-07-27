@@ -1,0 +1,66 @@
+﻿@model ADMINViewProfileViewModel;
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab middle std-pad-2">
+	<fieldset class="tab-fieldset flex-column std-pad-2">
+		<legend>Author's Data</legend>
+		@{
+			var user = Model.ExtendedUserDataPart;
+			if (user is not null)
+			{
+				<div class="data-row flex-column std-pad-2">
+					<div>
+						<h4>ID: </h4>
+						<p>@user.BasicUserDataPart.Id<p>
+					</div>
+					<div>
+						<h4>User Name: </h4>
+						<p>@user.BasicUserDataPart.Name<p>
+					</div>
+					<div>
+						<h4>E-mail: </h4>
+						<p>@user.Email</p>
+					</div>
+					<div>
+						<h4>Bio: </h4>
+						<p>@user.BasicUserDataPart.Bio</p>
+					</div>
+					<img class="avatar-img small" src="@Url.Action("GetAvatar", "Image", new { userId = user.BasicUserDataPart.Id })">
+					<div class="buttons flex-row">
+						@if (Model.Role == "user")
+						{
+							<button class="btn std-pad" style="width: fit-content;" onclick="location.href='@Url.Action("SetAsAdmin", "Admin", new { userId = user.BasicUserDataPart.Id, currentRole = "user" })'">Set as Admin</button>
+						}
+						<button class="btn std-pad" style="width: fit-content;" onclick="location.href='@Url.Action("DeleteUser", "Admin", new { userId = user.BasicUserDataPart.Id, currentRole = Model.Role })'">Delete</button>
+					</div>
+				</div>
+			}
+		}
+	</fieldset>
+</div>
+
+<div class="tab middle std-pad-2">
+	<fieldset class="tab-fieldset flex-row std-pad-2">
+		<legend>Author's Works</legend>
+		@{
+			var series = Model.Series;
+			@if (series is not null)
+			{
+				@foreach (var work in series)
+				{
+					<a href="@Url.Action("EditSeries", "Admin", new { seriesId = work.SeriesId })" class="series-preview flex-column std-pad">
+						<div>
+							<img class="series-cover" src="@Url.Action("GetCoverImage", "Image", new { seriesId = work.SeriesId })">
+						</div>
+						<h4>@work.Title</h4>
+						<p>@work.Year</p>
+						<div class="overlay"><p>Click to View</p></div>
+					</a>
+				}
+			}
+		}
+	</fieldset>
+</div>

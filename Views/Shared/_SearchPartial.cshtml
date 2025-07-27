@@ -1,0 +1,23 @@
+﻿@model GenreListViewModel;
+
+<div class="tab right std-pad-2">
+	<fieldset class="tab-fieldset std-pad">
+		<legend>Genres</legend>
+		<form class="flex-column" asp-controller="Reader" asp-action="GetSeriesByGenres" method="get">
+			<fieldset class="flex-row">
+				@foreach (Genre genre in Model.Genres)
+				{
+					<span>
+						<input type="checkbox" name="genres" value="@genre.GenreId">
+						<label for="genres">@genre.Name</label>
+					</span>
+				}
+			</fieldset>
+			<div>
+				<input type="checkbox" name="andOperation" value=true>
+				<label for="AND-operation">Chosen genres together</label>
+			</div>
+			<input class="btn std-pad" type="submit" value="Find">
+		</form>
+	</fieldset>
+</div>

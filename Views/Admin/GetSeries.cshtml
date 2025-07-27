@@ -1,0 +1,54 @@
+﻿@model ADMINGetSeriesViewModel;
+
+<div class="tab middle std-pad-2">
+	<form class="flex-column" asp-controller="Admin" asp-action="GetSeriesByParameters" method="get">
+		<fieldset class="grid-2-col">
+			<input name="Role" type="hidden" value="user" />
+			<label asp-for="Id">Get Series by Id</label>
+			<input asp-for="Id" class="text-input std-pad" type="text" />
+			<label asp-for="Title">or by Title</label>
+			<input asp-for="Title" class="text-input std-pad" type="text" />
+			<label asp-for="Year">or by Year</label>
+			<input asp-for="Year" class="text-input std-pad" type="text" />
+		</fieldset>
+		<input class="btn std-pad" type="submit" value="Find Series">
+	</form>
+</div>
+
+<div class="tab middle std-pad-2">
+	<fieldset class="tab-fieldset flex-column std-pad-2">
+		<legend>Series</legend>
+		@{
+			var series = Model.Series;
+			if (series is not null)
+			{
+				foreach (var work in series)
+				{
+					<div class="data-row flex-column std-pad-2">
+						<div class="grid-2-col" style="text-align: left;">
+							<img class="series-cover" src="@Url.Action("GetCoverImage", "Image", new { seriesId = work.Id })">
+							<div class="description">
+								<div>
+									<h4>ID: </h4>
+									<p>@work.Id<p>
+								</div>
+								<div>
+									<h4>Title: </h4>
+									<p>@work.Title<p>
+								</div>
+								<div>
+									<h4>Year: </h4>
+									<p>@work.Year</p>
+								</div>
+							</div>
+						</div>
+						<div class="buttons flex-row">
+							<button class="btn std-pad" style="width: fit-content;" onclick="location.href='@Url.Action("EditSeries", "Admin", new { seriesId = work.Id })'">Edit</button>
+							<button class="btn std-pad" style="width: fit-content;" onclick="location.href='@Url.Action("DeleteSeries", "Admin", new { seriesId = work.Id })'">Delete</button>
+						</div>
+					</div>
+				}
+			}
+		}
+	</fieldset>
+</div>

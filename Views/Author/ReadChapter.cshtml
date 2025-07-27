@@ -1,0 +1,45 @@
+﻿@model BasicChapterData;
+
+@{
+	ViewData["Title"] = "Read Chapter";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab middle std-pad-2">
+	@{
+		string styleClass;
+		string style;
+		@if (Model.Layout == "traditional")
+		{
+			styleClass = "flex-row";
+			style = "height: 79vh; overflow-x: auto; flex-wrap: nowrap; column-gap: 0; border: var(--std-border)";
+			if (Model.Direction == "left to right")
+			{
+				style += " flex-direction: row;";
+			}
+			else
+			{
+				style += " flex-direction: row-reverse;";
+			}
+		}
+		else
+		{
+			styleClass = "flex-column";
+			style = "row-gap: 0; border: var(--std-border)";
+		}
+	}
+	<div class="@styleClass" style="@style">
+		@{
+			var currentPage = Model.Pages!.First(p => p.PageId == Model.FirstPageId);
+			while (true)
+			{
+				<img src="@Url.Action("GetPageImage", "Image", new { pageId = currentPage.PageId })" style="height: 100%;">
+				currentPage = currentPage.NextPage;
+				if (currentPage is null)
+				{
+					break;
+				}
+			}
+		}
+	</div>
+</div>

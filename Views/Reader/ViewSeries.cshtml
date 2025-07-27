@@ -1,0 +1,105 @@
+﻿@model ExtendedSeriesData;
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab middle std-pad-2">
+	<fieldset class="tab-fieldset std-pad-2">
+		<legend>@Model.BasicSeriesDataPart.Title</legend>
+		<div class="grid-2-col" style="margin-bottom: 1rem; grid-template-columns: 44% 54%;">
+			<div>
+				<img class="series-cover" src="@Url.Action("GetCoverImage", "Image", new { seriesId = Model.BasicSeriesDataPart.Id})">
+				<div>
+					<p style="display: inline;">@Model.ViewCount</p>
+					<i class="fa-solid fa-eye" style="display: inline;"></i>
+					<p id="like-count" style="display: inline;">@Model.LikeCount</p>
+					<i class="fa-regular fa-thumbs-up" style="display: inline;" onclick="likeSeries('@Model.BasicSeriesDataPart.Id.ToString()')"></i>
+				</div>
+			</div>
+			<div class="series-data">
+				@if (Model.UserId is not null)
+				{
+					<div>
+						<h4>Author:</h4>
+						<p><a href="@Url.Action("ViewAuthor", "Reader", new { authorId = Model.UserId })">@Model.UserName</a></p>
+					</div>
+				}
+				<div>
+					<h4>Language:</h4>
+					<p>@Model.Language</p>
+				</div>
+				<div>
+					<h4>Age restriction:</h4>
+					<p>@Model.AgeRestriction</p>
+				</div>
+				<div>
+					<h4>Genres:</h4>
+					@{
+						var genres = new List<string>();
+						foreach (var genre in Model.Genres)
+						{
+							genres.Add(genre.Name);
+						}
+						<p>@String.Join(", ", genres)</p>
+					}
+				</div>
+				<div>
+					<h4>Layout:</h4>
+					<p>@Model.Layout</p>
+				</div>
+				<div>
+					<h4>Reading direction:</h4>
+					<p>@Model.Direction</p>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<h4 style="margin-bottom: 0.5rem;">Description</h4>
+		<p style="word-break: keep-all; margin-bottom: 1rem;">@Model.Description</p>
+		<h4 style="margin-bottom: 0.5rem;">Tags</h4>
+		<p style="word-break: keep-all;">@Model.Tags</p>
+	</fieldset>
+</div>
+
+<div class="tab middle std-pad-2">
+	@{
+		var chapters = Model.Chapters;
+		if ((chapters is not null) && (chapters.Count > 0))
+		{
+			for (int i = chapters.Count - 1; i >= 0; i--)
+			{
+				if (chapters.ElementAt(i).IsPublished)
+				{
+					<div class="chapter-preview std-pad">
+						<h4>Chapter @(i + 1): @chapters.ElementAt(i).Title</h4>
+						<p>@chapters.ElementAt(i).Date</p>
+						<p>Free</p>
+						<button class="btn std-pad" onclick="location.href='@Url.Action("ViewChapter", "Reader", new { chapterId = chapters.ElementAt(i).ChapterId, chapterIndex = i + 1, layout = Model.Layout, direction = Model.Direction })'" style="width: fit-content;">Read</button>
+					</div>
+				}
+			}
+		}
+	}
+</div>
+
+<script>
+	function likeSeries(id) {
+		fetch('/Reader/LikeSeries', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ SeriesId: id })
+		})
+		.then(response => {
+			if (response.ok) { return response.json() }
+		})
+		.then(data => {
+			if (data.success)
+			{
+				document.getElementById("like-count").innerHTML = data.likeCount;
+			}
+		});
+	}
+</script>
