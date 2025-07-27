@@ -1,0 +1,45 @@
+﻿:root {
+    --std-border: 0.2rem solid var(--black);
+    --std-shadow: 0 0.2rem 0 var(--black);
+    --dim-shadow: 0.1rem 0.1rem 0 var(--black), -0.1rem 0.1rem 0 var(--black), 0.2rem 0.2rem 0 var(--black), -0.2rem 0.2rem 0 var(--black);
+    --black: #000;
+    --body-color: #9e0818;
+    --nav-color: #362933;
+    --main-color: #fffbe0;
+    --tab-left-color: #acdaca;
+    --tab-middle-color: #f6ab9e;
+    --tab-right-color: #d0f8a0;
+    --button-color: #ffffe7;
+    --button-pressed-color: #fcf29d;
+    --white: #fff;
+}
+
+/* --- PADDINGS ---*/
+.std-pad {
+    padding: 0.5rem;
+}
+
+.std-pad-2 {
+    padding: 1rem;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    z-index: 2;
+    &:hover {
+        opacity: 1;
+    }
+    & p {
+        width: 100%;
+        text-align: center;
+        font-size: 1.4rem;
+        background-color: var(--black);
+        color: var(--white);
+    }
+}
