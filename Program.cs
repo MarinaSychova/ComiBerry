@@ -7,7 +7,6 @@ global using ComiBerry.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -31,18 +30,17 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.Cookie.Domain = "localhost"; // Set the domain for the cookie
-    options.Cookie.Path = "/"; // Cookie is available within the entire application\
-    options.Cookie.SecurePolicy = CookieSecurePolicy.None; // Ensure the cookie is only sent over HTTPS (set to false for local development)
-    options.Cookie.HttpOnly = true; // Prevent client-side scripts from accessing the cookie
-    options.Cookie.IsEssential = true; // Indicates the cookie is essential for the application to function
+    options.Cookie.Domain = "localhost";
+    options.Cookie.Path = "/";
+    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
     options.LoginPath = "/Navigation/Home";
     options.AccessDeniedPath = "/Navigation/Home";
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -50,7 +48,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -66,25 +63,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Navigation}/{action=Home}/{id?}");
-
-/*using (var scope = app.Services.CreateScope())
-{
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-    var roles = new List<string> { "superadmin", "admin", "user" };
-
-    foreach (var role in roles)
-    {
-        if (!await roleManager.RoleExistsAsync(role))
-        {
-            await roleManager.CreateAsync(new IdentityRole(role));
-        }
-    }
-
-    string name = "SuperAdmin";
-    string email = "superadmin@gmail.com";
-    string password = "SuperAdmin0";
-}*/
 
 app.Run();
 
