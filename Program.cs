@@ -25,7 +25,6 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddSingleton<EncryptionService>();
 builder.Services.AddControllersWithViews();
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -65,4 +64,5 @@ app.MapControllerRoute(
     pattern: "{controller=Navigation}/{action=Home}/{id?}");
 
 app.Run();
+
 
