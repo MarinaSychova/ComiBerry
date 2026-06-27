@@ -1,5 +1,9 @@
+<p align="center">
+  <img width="600" height="200" src="wwwroot/images/logo-color.svg">
+</p>
+
 # ComiBerry
-A platform for comics publication. This is actually my university bachelor project which can be used as a template for a much bigger project.
+A simple platform for comics publication. This is my university bachelor project which can be used as a template for a much bigger project.
 
 ## Features
   - profile settings (change avatar, e-mail and password)
